@@ -5,6 +5,7 @@ from flask import redirect
 from flask import url_for
 import re
 from datetime import datetime
+from datetime import date
 import mysql.connector
 from mysql.connector import FieldType
 import connect
@@ -25,7 +26,49 @@ def getCursor():
 
 @app.route("/")
 def home():
-    return render_template("base.html")
+    return render_template("home.html")
+
+@app.route ("/search")
+def search():
+    return render_template ("search.html")
+
+@app.route ("/searchresult", methods=["GET", "POST"])
+def searchresult():
+    author=request.args.get("author")
+    title =request.args.get("title")
+    connection = getCursor()
+    connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+        FROM books inner join bookcopies on books.bookid = bookcopies.bookid inner join loans \
+        on bookcopies.bookcopyid=loans.bookcopyid;")
+    resultlist = connection.fetchall()
+    result_list=[]
+
+    
+    if author is '':
+        for result in resultlist:
+            if title.lower() in result[1].lower():           
+                result_list.append(result)
+    
+    elif title is '':
+        for result in resultlist:
+            if author.lower() in result[2].lower():           
+                result_list.append(result)
+    
+    elif author is not '' and title is not '':
+        for result in resultlist:
+            if (author.lower() in result[2].lower()) and (title.lower() in result[1].lower()) :           
+                result_list.append(result)
+                print(result_list)
+    
+    if len(result_list) == 0:
+        return render_template ("noresult.html", author=author, title=title)
+    else:
+        return render_template ("result.html", author=author, title=title, result_list = result_list)
+                
+    
+
+
 
 @app.route("/listbooks")
 def listbooks():
