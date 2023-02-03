@@ -73,10 +73,11 @@ def searchresult():
 @app.route("/listbooks")
 def listbooks():
     connection = getCursor()
-    connection.execute("SELECT * FROM books;")
+    connection.execute("SELECT bookid, booktitle, author, category, \
+    yearofpublication FROM books;")
     bookList = connection.fetchall()
     print(bookList)
-    return render_template("booklist.html", booklist = bookList)    
+    return render_template("booklist.html", booklist = bookList)      
 
 @app.route("/loanbook")
 def loanbook():
