@@ -77,48 +77,48 @@ def listbooks():
     yearofpublication FROM books;")
     bookList = connection.fetchall()
     print(bookList)
-    return render_template("booklist.html", booklist = bookList)      
+    return render_template("booklist.html", booklist = bookList)  
 
-@app.route("/loanbook")
-def loanbook():
-    todaydate = datetime.now().date()
-    connection = getCursor()
-    connection.execute("SELECT * FROM borrowers;")
-    borrowerList = connection.fetchall()
-    sql = """SELECT * FROM bookcopies
-inner join books on books.bookid = bookcopies.bookid
- WHERE bookcopyid not in (SELECT bookcopyid from loans where returned <> 1 or returned is NULL);"""
-    connection.execute(sql)
-    bookList = connection.fetchall()
-    return render_template("addloan.html", loandate = todaydate,borrowers = borrowerList, books= bookList)
 
-@app.route("/loan/add", methods=["POST"])
-def addloan():
-    borrowerid = request.form.get('borrower')
-    bookid = request.form.get('book')
-    loandate = request.form.get('loandate')
-    cur = getCursor()
-    cur.execute("INSERT INTO loans (borrowerid, bookcopyid, loandate, returned) VALUES(%s,%s,%s,0);",(borrowerid, bookid, str(loandate),))
-    return redirect("/currentloans")
+@app.route("/staff")
+def staff():
+    return render_template("staffhome.html") 
 
-@app.route("/listborrowers")
-def listborrowers():
-    connection = getCursor()
-    connection.execute("SELECT * FROM borrowers;")
-    borrowerList = connection.fetchall()
-    return render_template("borrowerlist.html", borrowerlist = borrowerList)
+@app.route("/staff/search")
+def staffsearch():
+    return render_template("staffsearch.html") 
 
-@app.route("/currentloans")
-def currentloans():
-    connection = getCursor()
-    sql=""" select br.borrowerid, br.firstname, br.familyname,  
-                l.borrowerid, l.bookcopyid, l.loandate, l.returned, b.bookid, b.booktitle, b.author, 
-                b.category, b.yearofpublication, bc.format 
-            from books b
-                inner join bookcopies bc on b.bookid = bc.bookid
-                    inner join loans l on bc.bookcopyid = l.bookcopyid
-                        inner join borrowers br on l.borrowerid = br.borrowerid
-            order by br.familyname, br.firstname, l.loandate;"""
-    connection.execute(sql)
-    loanList = connection.fetchall()
-    return render_template("currentloans.html", loanlist = loanList)
+
+@app.route("/staff/borrowerlist")
+def borrowerlist():
+    return render_template("borrowerlist.html") 
+
+
+@app.route("/staff/updateborrower")
+def updateborrower():
+    return render_template("updateborrower.html") 
+
+@app.route("/staff/issuebooks")
+def issuebooks():
+    return render_template("issuebooks.html") 
+
+@app.route("/staff/returnbooks")
+def returnbooks():
+    return render_template("returnbooks.html") 
+
+@app.route("/staff/overduebooks")
+def overduebooks():
+    return render_template("overduebooks.html") 
+
+@app.route("/staff/loansummary")
+def loansummary():
+    return render_template("loansummary.html") 
+
+@app.route("/staff/borrowersummary")
+def borrowersummary():
+    return render_template("borrowersummary.html") 
+           
+
+
+
+    
