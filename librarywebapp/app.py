@@ -45,17 +45,17 @@ def searchresult():
     result_list=[]
 
     
-    if author is '':
+    if author == '':
         for result in resultlist:
             if title.lower() in result[1].lower():           
                 result_list.append(result)
     
-    elif title is '':
+    elif title == '':
         for result in resultlist:
             if author.lower() in result[2].lower():           
                 result_list.append(result)
     
-    elif author is not '' and title is not '':
+    elif author != '' and title != '':
         for result in resultlist:
             if (author.lower() in result[2].lower()) and (title.lower() in result[1].lower()) :           
                 result_list.append(result)
@@ -89,9 +89,43 @@ def staffsearch():
     return render_template("staffsearch.html") 
 
 
-@app.route("/staff/borrowerlist")
-def borrowerlist():
-    return render_template("borrowerlist.html") 
+@app.route("/staff/borrowersearch")
+def borrowersearch():
+    return render_template("borrowersearch.html") 
+
+@app.route("/staff/borrowersearchresult", methods=["GET", "POST"])
+def borrowersearchresult():
+    name=request.args.get("name")
+    borrowerid =request.args.get("borrowerid")
+    connection = getCursor()
+    connection.execute("SELECT * from borrowers;")
+    resultlist = connection.fetchall()
+    result_list=[]
+    if borrowerid == '':
+        for result in resultlist:
+            if (name.lower()) in (result[1].lower()) or (name.lower()) in (result[2].lower()):           
+                result_list.append(result)
+
+    elif name == '':
+        for result in resultlist:
+            if str(borrowerid) in str(result[0]):           
+                result_list.append(result)
+
+    elif name != '' and borrowerid != '':
+        for result in resultlist:
+            if (str(borrowerid) in str(result[0])) and ((name.lower()) in \
+            (result[1].lower()) or (name.lower()) in (result[2].lower())) :           
+                result_list.append(result)
+                print(result_list)   
+    print(result_list)
+    
+    if len(result_list) == 0:
+        return render_template ("noborrowerresult.html", name=name, borrowerid=borrowerid)
+    else:
+        return render_template ("borrowerresult.html", name=name, borrowerid=borrowerid, result_list = result_list)
+                
+
+
 
 
 @app.route("/staff/updateborrower")
