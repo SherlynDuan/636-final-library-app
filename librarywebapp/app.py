@@ -116,7 +116,9 @@ def borrowersearchresult():
             if (str(borrowerid) in str(result[0])) and ((name.lower()) in \
             (result[1].lower()) or (name.lower()) in (result[2].lower())) :           
                 result_list.append(result)
-                print(result_list)   
+                print(result_list)
+    
+    
     print(result_list)
     
     if len(result_list) == 0:
@@ -124,8 +126,6 @@ def borrowersearchresult():
     else:
         return render_template ("borrowerresult.html", name=name, borrowerid=borrowerid, result_list = result_list)
                 
-
-
 
 
 @app.route("/staff/updateborrower")
@@ -151,8 +151,3 @@ def loansummary():
 @app.route("/staff/borrowersummary")
 def borrowersummary():
     return render_template("borrowersummary.html") 
-           
-
-
-
-    
