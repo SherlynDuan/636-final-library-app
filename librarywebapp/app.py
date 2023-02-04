@@ -32,39 +32,39 @@ def home():
 def search():
     return render_template ("search.html")
 
-@app.route ("/searchresult", methods=["GET", "POST"])
+@app.route ("/searchresult", methods=["POST"])
 def searchresult():
-    author=request.args.get("author")
-    title =request.args.get("title")
+    author=request.form.get("author")
+    authorsearch = "%" + author + "%"
+    title =request.form.get("title")
+    titlesearch = "%" + title + "%"
     connection = getCursor()
-    connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+    
+    if author is '':
+        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
         FROM books inner join bookcopies on books.bookid = bookcopies.bookid inner join loans \
-        on bookcopies.bookcopyid=loans.bookcopyid;")
-    resultlist = connection.fetchall()
-    result_list=[]
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
+        result_list = connection.fetchall()
+    
+    elif title is '':
+        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+        FROM books inner join bookcopies on books.bookid = bookcopies.bookid inner join loans \
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s;",(authorsearch,)) 
+        result_list= connection.fetchall()
 
-    
-    if author == '':
-        for result in resultlist:
-            if title.lower() in result[1].lower():           
-                result_list.append(result)
-    
-    elif title == '':
-        for result in resultlist:
-            if author.lower() in result[2].lower():           
-                result_list.append(result)
-    
-    elif author != '' and title != '':
-        for result in resultlist:
-            if (author.lower() in result[2].lower()) and (title.lower() in result[1].lower()) :           
-                result_list.append(result)
-                print(result_list)
-    
-    if len(result_list) == 0:
-        return render_template ("noresult.html", author=author, title=title)
     else:
-        return render_template ("result.html", author=author, title=title, result_list = result_list)
+        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+        FROM books inner join bookcopies on books.bookid = bookcopies.bookid inner join loans \
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s And booktitle LIKE %s;",(authorsearch,titlesearch,)) 
+        result_list= connection.fetchall()
+    
+    print (result_list)
+
+    return render_template ("result.html", author=author, title=title, result_list = result_list )
+    
                 
     
 
@@ -95,36 +95,27 @@ def borrowersearch():
 
 @app.route("/staff/borrowersearchresult", methods=["GET", "POST"])
 def borrowersearchresult():
-    name=request.args.get("name")
-    borrowerid =request.args.get("borrowerid")
+    name=request.form.get("name")
+    namesearch = "%" + name + "%"
+    borrowerid =request.form.get("borrowerid")
+    borroweridsearch= "%" + borrowerid + "%"
     connection = getCursor()
-    connection.execute("SELECT * from borrowers;")
-    resultlist = connection.fetchall()
-    result_list=[]
+    
+    
     if borrowerid == '':
-        for result in resultlist:
-            if (name.lower()) in (result[1].lower()) or (name.lower()) in (result[2].lower()):           
-                result_list.append(result)
+        connection.execute("SELECT * from borrowers WHERE firstname LIKE %s OR familyname LIKE %s;", (namesearch, namesearch, ))
+        result_list = connection.fetchall()
 
     elif name == '':
-        for result in resultlist:
-            if str(borrowerid) in str(result[0]):           
-                result_list.append(result)
+        connection.execute("SELECT * from borrowers WHERE borrowerid LIKE %s;", (borroweridsearch, ))
+        result_list = connection.fetchall()       
 
-    elif name != '' and borrowerid != '':
-        for result in resultlist:
-            if (str(borrowerid) in str(result[0])) and ((name.lower()) in \
-            (result[1].lower()) or (name.lower()) in (result[2].lower())) :           
-                result_list.append(result)
-                print(result_list)
-    
-    
-    print(result_list)
-    
-    if len(result_list) == 0:
-        return render_template ("noborrowerresult.html", name=name, borrowerid=borrowerid)
     else:
-        return render_template ("borrowerresult.html", name=name, borrowerid=borrowerid, result_list = result_list)
+        connection.execute ("SELECT * from borrowers WHERE borrowerid LIKE %s AND (familyname LIKE %s OR firstname LIKE %s);", (borroweridsearch,namesearch, namesearch,)) 
+        result_list = connection.fetchall()
+    
+    
+    return render_template ("borrowerresult.html", name=name, borrowerid=borrowerid, result_list = result_list)
                 
 
 
