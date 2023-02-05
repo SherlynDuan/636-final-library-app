@@ -148,7 +148,34 @@ def staffupdateinfo():
     connection.execute ( "SELECT * FROM borrowers WHERE borrowerid= %s;" , (ID, ) )
     results_list = connection.fetchall()
     print (results_list)
-    return render_template ("updateconfirm.html", ID=ID, results_list= results_list) 
+    return render_template ("updateconfirm.html", ID=ID, results_list= results_list)
+
+
+ 
+
+@app.route("/staff/addborrower")
+def addborrower():
+    return render_template("addborrower.html")
+
+@app.route("/staff/addborrowerinfo",  methods=["GET", "POST"])
+def addborrowerinfo():
+    Firstname=request.form.get("firstname")
+    Familyname=request.form.get("familyname")
+    Dateofbirth=request.form.get("dateofbirth")
+    Housenumbername=request.form.get("housenumbername")
+    Street=request.form.get("street")
+    Town=request.form.get("town")
+    City=request.form.get("city")
+    Postalcode=request.form.get("postalcode")
+    connection = getCursor()
+    connection.execute ( "INSERT INTO borrowers (firstname, familyname, dateofbirth,  housenumbername, street, town, \
+            city, postalcode ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s );", (Firstname, Familyname, Dateofbirth,\
+                Housenumbername, Street, Town, City, Postalcode, ))
+    connection.execute ( "SELECT * from borrowers ORDER BY borrowerid DESC LIMIT 1;")
+    results_list = connection.fetchall()
+
+    print (results_list)
+    return render_template ("addconfirm.html", results_list= results_list)
 
 
 @app.route("/staff/issuebooks")

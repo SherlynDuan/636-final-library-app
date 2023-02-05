@@ -1,0 +1,24 @@
+{% extends "staffbase.html" %}
+{% block content %}
+
+<h3 style="text-align:center; margin:30px auto;">Congratulations ! </h3>
+<h3 style="text-align:center; margin:30px auto;">You have successfully added detials of a borrower</h3>
+
+<div class="container mt-3">
+    <table class="table"> 
+        
+        <tr><th>Borrower ID</th><th>Firstname</th><th>Familyname</th><th>Date of Birth</th><th>House Number Name</th>
+        <th>Street</th><th>Town</th><th>City</th><th>Postalcode</th></tr>
+        {% for result in results_list %}
+        <tr><th>{{result[0]}}</th><th>{{result[1]}}</th><th>{{result[2]}}</th><th>{{result[3]}}</th><th>{{result[4]}}</th>
+            <th>{{result[5]}}</th><th>{{result[6]}}</th><th>{{result[7]}}</th><th>{{result[8]}}</th></tr>  
+        {% endfor %}  
+    </table>
+</div>
+    
+
+
+        
+
+
+{% endblock %}
