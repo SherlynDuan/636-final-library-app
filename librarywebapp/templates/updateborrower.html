@@ -1,0 +1,10 @@
+{% extends "staffbase.html" %}
+{% block content %}
+<p style="text-align:center; font-size: 68px; margin:150px auto; "> Welcome to Waikirikiri Library Admin</p>
+<div class="container mt-3">
+  <form style="text-align:center;" action = "/staff/borrowerid"  method="POST">
+    <input type="text" style="border-radius: 5px;" placeholder="Please input ID" name="id">
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

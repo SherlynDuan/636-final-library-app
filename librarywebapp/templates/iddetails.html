@@ -1,0 +1,18 @@
+{% extends "staffbase.html" %}
+{% block content %}
+<p style="text-align:center; font-size: 32px; margin:50px auto; "> Please update the details of Borrower ID {{id}}</p>
+<div class="container mt-3">
+  <form style="text-align:center;margin:10px auto; width: 500px; " action="/staff/updateinfo" method="POST">
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="firstname" name="firstname" required>
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="familyname" name="familyname" required>
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="dateofbirth xxxx-xx-xx" name="dateofbirth" required>
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="housenumbername" name="housenumbername" required>
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="street" name="street" required>
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="town" name="town" required>
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="city" name="city" required>
+    <input type="text" style="margin:5px auto; width: 500px; " placeholder="postalcode" name="postalcode" required>
+    <input type="hidden"  name="id" value="{{id}}">
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

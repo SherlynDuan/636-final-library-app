@@ -66,10 +66,6 @@ def searchresult():
     return render_template ("result.html", author=author, title=title, result_list = result_list )
     
                 
-    
-
-
-
 @app.route("/listbooks")
 def listbooks():
     connection = getCursor()
@@ -122,6 +118,38 @@ def borrowersearchresult():
 @app.route("/staff/updateborrower")
 def updateborrower():
     return render_template("updateborrower.html") 
+
+@app.route("/staff/borrowerid",  methods=["GET", "POST"])
+def staffborrowerid():
+    id=request.form.get("id")
+    connection = getCursor()
+    connection.execute ("SELECT * from borrowers WHERE borrowerid = %s;", (id,) )
+    results= connection.fetchall()
+    print (results)
+
+    return render_template("iddetails.html", id=id, results=results) 
+
+@app.route("/staff/updateinfo",  methods=["GET", "POST"])
+def staffupdateinfo():
+    ID=request.form.get("id")
+    Firstname=request.form.get("firstname")
+    Familyname=request.form.get("familyname")
+    Dateofbirth=request.form.get("dateofbirth")
+    Housenumbername=request.form.get("housenumbername")
+    Street=request.form.get("street")
+    Town=request.form.get("town")
+    City=request.form.get("city")
+    Postalcode=request.form.get("postalcode")
+    connection = getCursor()
+    connection.execute ( "UPDATE borrowers SET firstname=%s, familyname=%s,\
+        dateofbirth=%s,  housenumbername=%s, street=%s, town=%s, \
+            city=%s, postalcode=%s  WHERE borrowerid= %s;" , (Firstname, Familyname, Dateofbirth,\
+                Housenumbername, Street, Town, City, Postalcode, ID,  ))
+    connection.execute ( "SELECT * FROM borrowers WHERE borrowerid= %s;" , (ID, ) )
+    results_list = connection.fetchall()
+    print (results_list)
+    return render_template ("updateconfirm.html", ID=ID, results_list= results_list) 
+
 
 @app.route("/staff/issuebooks")
 def issuebooks():
