@@ -224,7 +224,15 @@ def returnbooks_result():
 
 @app.route("/staff/overduebooks")
 def overduebooks():
-    return render_template("overduebooks.html") 
+    connection = getCursor()
+    connection.execute ( " SELECT borrowers.firstname, borrowers.familyname, loans.borrowerid, books.booktitle, bookcopies.bookcopyid, DATEDIFF(CURDATE(),loans.loandate) AS daysonLoan FROM borrowers \
+        INNER JOIN loans on loans.borrowerid=borrowers.borrowerid\
+        INNER JOIN bookcopies on loans.bookcopyid= bookcopies.bookcopyid \
+        INNER JOIN books on books.bookid=bookcopies.bookid\
+        WHERE loans.returned = 0 and DATEDIFF(CURDATE(),loans.loandate) >=35;")
+    overdue_list=connection.fetchall()
+    print ( overdue_list)    
+    return render_template("overduebooks.html", overdue_list=overdue_list) 
 
 @app.route("/staff/loansummary")
 def loansummary():

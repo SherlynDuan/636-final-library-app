@@ -1,0 +1,25 @@
+{% extends "staffbase.html" %}
+{% block content %}
+
+<h3 style="text-align:center; margin:30px auto;">Overdue Books List</h3>
+
+<div class="container mt-3">
+    <table class="table"> 
+        
+        <tr><th>First Name</th><th>Family Name</th><th>Borrower ID</th><th>Booktitle</th><th>Book Copy ID</th><th>Days on Loan</th></tr>
+        {% for result in overdue_list %}
+        <tr>
+            {% set currentname=namespace(id=0)%}
+            {% if currentname.id !=result[2]%}
+            <td>{{result[0]}}</td><td>{{result[1]}}</td>
+            {% set currentname.id =result[2] %}
+            {%else%}
+            <td></td><td></td>
+            {% endif %}    
+        <th>{{result[2]}}</th><th>{{result[3]}}</th><th>{{result[4]}}</th><th>{{result[5]}}</th>
+        {% endfor %}
+        </tr>    
+    </table>
+</div>
+
+{% endblock %}

@@ -18,7 +18,7 @@
 
             {% if result[5]== 1 %}
             <td>Available</td>
-            {%elif result[5]== 0 and result[6]>=28 %}
+            {%elif result[5]== 0 and result[6]>=35 %}
             <td>Overdue</td>
             {%else%}
             <td>Due in {{28-result[6]}} days</td>
