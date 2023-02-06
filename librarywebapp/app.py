@@ -211,6 +211,17 @@ def issuebooks_result():
 def returnbooks():
     return render_template("returnbooks.html") 
 
+@app.route("/staff/returnbooks_result",  methods=["GET", "POST"] )
+def returnbooks_result():
+    bookcopyid=request.form.get("bookid")
+    borrowerid=request.form.get("borrowerid")
+    todaydate = datetime.now().date()
+    connection = getCursor()
+    connection.execute ( " UPDATE loans SET returned = 1 WHERE bookcopyid= %s AND borrowerid= %s;", (bookcopyid, borrowerid, ))
+    return render_template("return_success.html", borrowerid=borrowerid, bookcopyid=bookcopyid, todaydate=todaydate )
+
+    
+
 @app.route("/staff/overduebooks")
 def overduebooks():
     return render_template("overduebooks.html") 
