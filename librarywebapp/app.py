@@ -82,7 +82,43 @@ def staff():
 
 @app.route("/staff/search")
 def staffsearch():
-    return render_template("staffsearch.html") 
+    return render_template("staffsearch.html")
+
+@app.route ("/staffsearchresult", methods=["POST"])
+def staffsearchresult():
+    author=request.form.get("author")
+    authorsearch = "%" + author + "%"
+    title =request.form.get("title")
+    titlesearch = "%" + title + "%"
+    connection = getCursor()
+    
+    if author is '':
+        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
+        result_list = connection.fetchall()
+
+    
+    elif title is '':
+        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
+        result_list= connection.fetchall()
+
+    else:
+        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+        FROM bookcopies LEFT JOIN books ON books.bookid = bookcopies.bookid LEFT JOIN loans \
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s And booktitle LIKE %s;",(authorsearch,titlesearch,)) 
+        result_list= connection.fetchall()
+    
+    print (result_list)
+
+    return render_template ("staffsearch_result.html", author=author, title=title, result_list = result_list )
+
+ 
 
 
 @app.route("/staff/borrowersearch")
@@ -236,8 +272,18 @@ def overduebooks():
 
 @app.route("/staff/loansummary")
 def loansummary():
-    return render_template("loansummary.html") 
+    connection = getCursor()
+    connection.execute ("SELECT books.bookid, books.booktitle, COUNT(loans.loanid) FROM loans LEFT JOIN bookcopies \
+        ON bookcopies.bookcopyid=loans.bookcopyid INNER JOIN books ON books.bookid=bookcopies.bookid \
+        GROUP BY bookcopies.bookid ORDER BY COUNT(loans.loanid) DESC;")
+    loansummary=connection.fetchall()
+
+    return render_template("loansummary.html", loansummary=loansummary) 
 
 @app.route("/staff/borrowersummary")
 def borrowersummary():
-    return render_template("borrowersummary.html") 
+    connection = getCursor()
+    connection.execute (" SELECT borrowers.borrowerid, borrowers.firstname,borrowers.familyname, COUNT(loans.loanid) FROM loans LEFT JOIN borrowers \
+        ON borrowers.borrowerid=loans.borrowerid GROUP BY loans.borrowerid ORDER BY COUNT(loans.loanid) DESC;")
+    borrowersummary=connection.fetchall()
+    return render_template("borrowersummary.html", borrowersummary=borrowersummary) 

@@ -1,0 +1,22 @@
+{% extends "staffbase.html" %}
+{% block content %}
+
+<h3 style="text-align:center; margin:30px auto;">Borrower Summary</h3>
+
+<div class="container mt-3">
+    <table class="table"> 
+        
+        <tr><th>Borrower ID</th><th>Frist Name</th><th>Family Name</th><th>Borrow Times</th></tr>
+        {% for result in borrowersummary %}
+        <tr><th>{{result[0]}}</th><th>{{result[1]}}</th><th>{{result[2]}}</th><th>{{result[3]}}</th>       
+        {% endfor %}
+        </tr>    
+    </table>
+</div>
+    
+
+
+        
+
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "staffbase.html" %}
+{% block content %}
+
+<h3 style="text-align:center; margin:30px auto;">Search Results for {{title}} {{author}}</h3>
+
+<div class="container mt-3">
+    <table class="table"> 
+        
+        <tr><th>bookid</th><th>booktitle</th><th>author</th><th>bookcopyid</th><th>format</th>
+        <th>Returned</th><th>Status</th></tr>
+        {% for result in result_list %}
+        <tr><th>{{result[0]}}</th><th>{{result[1]}}</th><th>{{result[2]}}</th><th>{{result[3]}}</th><th>{{result[4]}}</th>
+            {% if result[5]== 1 %}
+            <td>Returned</td>
+            {% elif result[5] == None %}
+            <td>Never Borrowed</td>
+            {% elif result[5]== 0%}
+            <td>On Loan</td>
+            {% endif %}
+            
+            {% if result[6] == None %}
+            <td>Available</td>
+            {% elif result[5]== 1 %}
+            <td>Available</td>
+            {%elif result[5]== 0 and result[6]>=35 %}
+            <td>Overdue</td>
+            {%elif result[5]== 0 and result[6] < 35 %}
+            <td>Due in {{28-result[6]}} days</td>
+            {% endif %}
+        
+        {% endfor %}
+        </tr>    
+    </table>
+</div>
+
+{% endblock %}
