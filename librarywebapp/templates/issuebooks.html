@@ -1,0 +1,11 @@
+{% extends "staffbase.html" %}
+{% block content %}
+<p style="text-align:center; font-size: 52px; margin:150px auto; "> Please input the Book Copy ID and Borrower ID</p>
+<div class="container mt-3">
+  <form style="text-align:center;" action = "/staff/issuebooks_result"  method="POST">
+    <input type="text" style="border-radius: 5px;" placeholder="Please input Book Copy ID" name="bookid" required>
+    <input type="text" style="border-radius: 5px;" placeholder="Please input Borrower ID" name="borrowerid" required>   
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

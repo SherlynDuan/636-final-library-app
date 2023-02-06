@@ -180,7 +180,32 @@ def addborrowerinfo():
 
 @app.route("/staff/issuebooks")
 def issuebooks():
-    return render_template("issuebooks.html") 
+    return render_template("issuebooks.html")
+
+@app.route( "/staff/issuebooks_result",  methods=["GET", "POST"])
+def issuebooks_result():
+    bookcopyid=request.form.get("bookid")
+    borrowerid=request.form.get("borrowerid")
+    todaydate = datetime.now().date()
+    connection = getCursor()
+    connection.execute ( "SELECT bookcopies.bookcopyid, bookcopies.format, loans.borrowerid, loans.returned, loans.loandate From loans INNER JOIN bookcopies \
+        on loans.bookcopyid=bookcopies.bookcopyid WHERE bookcopies.bookcopyid = %s ORDER by loans.loandate DESC LIMIT 1  ;", (bookcopyid, ) )
+    loans= connection.fetchall()
+    print (loans)
+    if loans[0][1] == "eBOOK" or loans[0][1] == "Audio Book" :
+        connection = getCursor()
+        connection.execute ( " INSERT INTO loans (bookcopyid, borrowerid , loandate, returned) VALUES (%s, %s,%s,0);", (bookcopyid, borrowerid, todaydate, ) )
+        return render_template ("issuebook_success.html", bookcopyid=bookcopyid, borrowerid=borrowerid, todaydate=todaydate)
+
+    elif (loans[0][1] == "Hardcover" or "paperback" or "Illustrated") and loans[0][3] == 1:
+        connection = getCursor()
+        connection.execute ( " INSERT INTO loans (bookcopyid, borrowerid , loandate, returned) VALUES (%s, %s,%s,0);", (bookcopyid, borrowerid, todaydate, ) )
+        return render_template("issuebook_success.html", bookcopyid=bookcopyid, borrowerid=borrowerid, todaydate=todaydate)
+        
+    else:
+        return render_template( "issuebook_fail.html")
+
+
 
 @app.route("/staff/returnbooks")
 def returnbooks():
