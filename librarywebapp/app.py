@@ -24,14 +24,17 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
+#  The public interface
 @app.route("/")
 def home():
     return render_template("home.html")
 
+#Search the available books by title and/or author, See the availability of all copies of a book, whether a copy is on loan and, if so, the due date.
 @app.route ("/search")
 def search():
     return render_template ("search.html")
 
+# show results of the book search, get input value from forms, allow for partial text searches
 @app.route ("/searchresult", methods=["POST"])
 def searchresult():
     author=request.form.get("author")
@@ -39,14 +42,16 @@ def searchresult():
     title =request.form.get("title")
     titlesearch = "%" + title + "%"
     connection = getCursor()
-    
+
+# an if condition to test which input is empty
+# if the author input is empty   
     if author == '':
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
         FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
         on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
         result_list = connection.fetchall()
-    
+# if the title input is empty      
     elif title == '':
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
@@ -65,7 +70,7 @@ def searchresult():
 
     return render_template ("result.html", author=author, title=title, result_list = result_list )
     
-                
+# List all books available in the library at the /booklist route Include book title, author,category and year of publication.                
 @app.route("/listbooks")
 def listbooks():
     connection = getCursor()
@@ -75,15 +80,18 @@ def listbooks():
     print(bookList)
     return render_template("booklist.html", booklist = bookList)  
 
-
+# homepage of the staff interface
 @app.route("/staff")
 def staff():
     return render_template("staffhome.html") 
 
+#Search the available books by title and/or author, See the availability of all copies of a book, whether a copy is on loan and, if so, the due date.
+@app.route ("/search")
 @app.route("/staff/search")
 def staffsearch():
     return render_template("staffsearch.html")
 
+## show results of the book search, get input value from forms, allow for partial text searches. 
 @app.route ("/staffsearchresult", methods=["POST"])
 def staffsearchresult():
     author=request.form.get("author")
@@ -120,10 +128,12 @@ def staffsearchresult():
 
  
 
-
+# View the details of a borrower, searching by name or by borrower id.
 @app.route("/staff/borrowersearch")
 def borrowersearch():
     return render_template("borrowersearch.html") 
+
+#show borrowe rsearch results
 
 @app.route("/staff/borrowersearchresult", methods=["GET", "POST"])
 def borrowersearchresult():
@@ -150,11 +160,13 @@ def borrowersearchresult():
     return render_template ("borrowerresult.html", name=name, borrowerid=borrowerid, result_list = result_list)
                 
 
-
+# Update the details of a borrower
 @app.route("/staff/updateborrower")
 def updateborrower():
     return render_template("updateborrower.html") 
 
+
+# get the borrower id that the staff wants to update
 @app.route("/staff/borrowerid",  methods=["GET", "POST"])
 def staffborrowerid():
     id=request.form.get("id")
@@ -165,6 +177,7 @@ def staffborrowerid():
 
     return render_template("iddetails.html", id=id, results=results) 
 
+#upda information to the database
 @app.route("/staff/updateinfo",  methods=["GET", "POST"])
 def staffupdateinfo():
     ID=request.form.get("id")
@@ -188,11 +201,13 @@ def staffupdateinfo():
 
 
  
-
+#Add a new borrower
 @app.route("/staff/addborrower")
 def addborrower():
     return render_template("addborrower.html")
 
+
+#get all input value from users and insert into database
 @app.route("/staff/addborrowerinfo",  methods=["GET", "POST"])
 def addborrowerinfo():
     Firstname=request.form.get("firstname")
@@ -213,11 +228,13 @@ def addborrowerinfo():
     print (results_list)
     return render_template ("addconfirm.html", results_list= results_list)
 
-
+#Issue a book to a borrower. Physical Books can only be loaned once at a time , eBooks and Audio Books can be loaned multiple times simultaneously
+#staff type in book copy id and borrower id
 @app.route("/staff/issuebooks")
 def issuebooks():
     return render_template("issuebooks.html")
 
+#show results of issuing books and update database.
 @app.route( "/staff/issuebooks_result",  methods=["GET", "POST"])
 def issuebooks_result():
     bookcopyid=request.form.get("bookid")
@@ -228,6 +245,8 @@ def issuebooks_result():
         on loans.bookcopyid=bookcopies.bookcopyid WHERE bookcopies.bookcopyid = %s ORDER by loans.loandate DESC LIMIT 1  ;", (bookcopyid, ) )
     loans= connection.fetchall()
     print (loans)
+
+    #an if condition to test if the book is a Physical one or not
     if loans[0][1] == "eBook" or loans[0][1] == "Audio Book" :
         connection = getCursor()
         connection.execute ( " INSERT INTO loans (bookcopyid, borrowerid , loandate, returned) VALUES (%s, %s,%s,0);", (bookcopyid, borrowerid, todaydate, ) )
@@ -242,11 +261,12 @@ def issuebooks_result():
         return render_template( "issuebook_fail.html")
 
 
-
+#Return a book that has been on loan
 @app.route("/staff/returnbooks")
 def returnbooks():
     return render_template("returnbooks.html") 
 
+#return results
 @app.route("/staff/returnbooks_result",  methods=["GET", "POST"] )
 def returnbooks_result():
     bookcopyid=request.form.get("bookid")
@@ -257,7 +277,7 @@ def returnbooks_result():
     return render_template("return_success.html", borrowerid=borrowerid, bookcopyid=bookcopyid, todaydate=todaydate )
 
     
-
+#Display a list of all overdue books & their borrowers. Group all overdue books by borrower 
 @app.route("/staff/overduebooks")
 def overduebooks():
     connection = getCursor()
@@ -270,6 +290,7 @@ def overduebooks():
     print ( overdue_list)    
     return render_template("overduebooks.html", overdue_list=overdue_list) 
 
+#Display a list (Loan Summary) showing the number of times each book has been loaned in total.
 @app.route("/staff/loansummary")
 def loansummary():
     connection = getCursor()
@@ -280,6 +301,7 @@ def loansummary():
 
     return render_template("loansummary.html", loansummary=loansummary) 
 
+#Display a list (Borrower Summary) showing all borrowers and the number of loans (past and current combined) in total they each have had.
 @app.route("/staff/borrowersummary")
 def borrowersummary():
     connection = getCursor()
