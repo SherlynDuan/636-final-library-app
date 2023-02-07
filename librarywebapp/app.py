@@ -40,24 +40,24 @@ def searchresult():
     titlesearch = "%" + title + "%"
     connection = getCursor()
     
-    if author is '':
+    if author == '':
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
-        FROM books inner join bookcopies on books.bookid = bookcopies.bookid inner join loans \
+        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
         on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
         result_list = connection.fetchall()
     
-    elif title is '':
+    elif title == '':
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
-        FROM books inner join bookcopies on books.bookid = bookcopies.bookid inner join loans \
-        on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s;",(authorsearch,)) 
+        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(authorsearch,)) 
         result_list= connection.fetchall()
 
     else:
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
-        FROM books inner join bookcopies on books.bookid = bookcopies.bookid inner join loans \
+        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
         on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s And booktitle LIKE %s;",(authorsearch,titlesearch,)) 
         result_list= connection.fetchall()
     
@@ -70,7 +70,7 @@ def searchresult():
 def listbooks():
     connection = getCursor()
     connection.execute("SELECT bookid, booktitle, author, category, \
-    yearofpublication FROM books;")
+    yearofpublication FROM books ;")
     bookList = connection.fetchall()
     print(bookList)
     return render_template("booklist.html", booklist = bookList)  
@@ -92,15 +92,15 @@ def staffsearchresult():
     titlesearch = "%" + title + "%"
     connection = getCursor()
     
-    if author is '':
+    if author  == '':
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
-       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+       loans.returned,  DATEDIFF(CURDATE(),loans.loandate) \
         FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
         on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
         result_list = connection.fetchall()
 
     
-    elif title is '':
+    elif title  == '':
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
         FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
@@ -224,11 +224,11 @@ def issuebooks_result():
     borrowerid=request.form.get("borrowerid")
     todaydate = datetime.now().date()
     connection = getCursor()
-    connection.execute ( "SELECT bookcopies.bookcopyid, bookcopies.format, loans.borrowerid, loans.returned, loans.loandate From loans INNER JOIN bookcopies \
+    connection.execute ( "SELECT bookcopies.bookcopyid, bookcopies.format, loans.borrowerid, loans.returned, loans.loandate From loans RIGHT JOIN bookcopies \
         on loans.bookcopyid=bookcopies.bookcopyid WHERE bookcopies.bookcopyid = %s ORDER by loans.loandate DESC LIMIT 1  ;", (bookcopyid, ) )
     loans= connection.fetchall()
     print (loans)
-    if loans[0][1] == "eBOOK" or loans[0][1] == "Audio Book" :
+    if loans[0][1] == "eBook" or loans[0][1] == "Audio Book" :
         connection = getCursor()
         connection.execute ( " INSERT INTO loans (bookcopyid, borrowerid , loandate, returned) VALUES (%s, %s,%s,0);", (bookcopyid, borrowerid, todaydate, ) )
         return render_template ("issuebook_success.html", bookcopyid=bookcopyid, borrowerid=borrowerid, todaydate=todaydate)
