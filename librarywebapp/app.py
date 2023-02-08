@@ -56,7 +56,7 @@ def searchresult():
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
         FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
-        on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(authorsearch,)) 
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s;",(authorsearch,)) 
         result_list= connection.fetchall()
 
     else:
@@ -100,25 +100,24 @@ def staffsearchresult():
     titlesearch = "%" + title + "%"
     connection = getCursor()
     
-    if author  == '':
-        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
-       loans.returned,  DATEDIFF(CURDATE(),loans.loandate) \
-        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
-        on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
-        result_list = connection.fetchall()
-
-    
-    elif title  == '':
+    if author == '':
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
         FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
         on bookcopies.bookcopyid=loans.bookcopyid WHERE booktitle LIKE %s;",(titlesearch,)) 
+        result_list = connection.fetchall()
+# if the title input is empty      
+    elif title == '':
+        connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
+       loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
+        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
+        on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s;",(authorsearch,)) 
         result_list= connection.fetchall()
 
     else:
         connection.execute("SELECT books.bookid, books.booktitle, books.author, bookcopies.bookcopyid, bookcopies.format,\
        loans.returned, DATEDIFF(CURDATE(),loans.loandate) \
-        FROM bookcopies LEFT JOIN books ON books.bookid = bookcopies.bookid LEFT JOIN loans \
+        FROM bookcopies LEFT JOIN books on books.bookid = bookcopies.bookid LEFT JOIN loans \
         on bookcopies.bookcopyid=loans.bookcopyid WHERE author LIKE %s And booktitle LIKE %s;",(authorsearch,titlesearch,)) 
         result_list= connection.fetchall()
     
@@ -245,14 +244,13 @@ def issuebooks_result():
         on loans.bookcopyid=bookcopies.bookcopyid WHERE bookcopies.bookcopyid = %s ORDER by loans.loandate DESC LIMIT 1  ;", (bookcopyid, ) )
     loans= connection.fetchall()
     print (loans)
-
     #an if condition to test if the book is a Physical one or not
     if loans[0][1] == "eBook" or loans[0][1] == "Audio Book" :
         connection = getCursor()
         connection.execute ( " INSERT INTO loans (bookcopyid, borrowerid , loandate, returned) VALUES (%s, %s,%s,0);", (bookcopyid, borrowerid, todaydate, ) )
         return render_template ("issuebook_success.html", bookcopyid=bookcopyid, borrowerid=borrowerid, todaydate=todaydate)
 
-    elif (loans[0][1] == "Hardcover" or "paperback" or "Illustrated") and loans[0][3] == 1:
+    elif (loans[0][1] == "Hardcover" or "paperback" or "Illustrated") and (loans[0][3] == 1 or loans[0][3] == None):
         connection = getCursor()
         connection.execute ( " INSERT INTO loans (bookcopyid, borrowerid , loandate, returned) VALUES (%s, %s,%s,0);", (bookcopyid, borrowerid, todaydate, ) )
         return render_template("issuebook_success.html", bookcopyid=bookcopyid, borrowerid=borrowerid, todaydate=todaydate)

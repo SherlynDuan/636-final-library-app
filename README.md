@@ -17,6 +17,10 @@
 
 # 5, There is a base.html for both public and staff interface as these two interfaces require different menus and offer different features.
 
+# 6, all bookcopies will be displayed if no author or title is input
+
+# 7, all borrowers will be displayed if no ID or name is input.
+
 # changes required to support multiple branches
 # 1, if the application is to support multiple library branches, more tables need to be added, such as a location table
 
