@@ -306,4 +306,8 @@ def borrowersummary():
     connection.execute (" SELECT borrowers.borrowerid, borrowers.firstname,borrowers.familyname, COUNT(loans.loanid) FROM loans LEFT JOIN borrowers \
         ON borrowers.borrowerid=loans.borrowerid GROUP BY loans.borrowerid ORDER BY COUNT(loans.loanid) DESC;")
     borrowersummary=connection.fetchall()
-    return render_template("borrowersummary.html", borrowersummary=borrowersummary) 
+    return render_template("borrowersummary.html", borrowersummary=borrowersummary)
+
+# Code to enable debug mode 
+if __name__ == '__main__':
+    app.run(debug=True)
