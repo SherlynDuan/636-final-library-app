@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div  class="banner">
+  <img class="searchimg" src="/static/Search.png" alt="search logo">
+  <form action="/staffsearchbookresult" method="POST">
+      <input class="searchinput" type="text" placeholder="Search by title or author" name="searchinput">
+      <button style="left:52%;" class="searchbutton" type="submit">Go</button>
+  </form>
+</div >
+{% endblock %}

@@ -1,6 +1,10 @@
-{% extends "staffbase.html" %}
+{% extends "base.html" %}
 {% block content %}
+<div class="searchresult" style="height:200px; width:60%;margin-bottom:30px;" >
+<p style="text-align:center; margin:30px auto;">Sorry! This Book is on loan. </p>
+</div>
 
-<h3 style="text-align:center; margin:30px auto;">Sorry! </h3>
-<h3 style="text-align:center; margin:30px auto;">This Book is on loan. </h3>
+<div>
+    <button style="margin-top: 50px;"type = "button" class="backbutton" onclick="history.back()">Back</button>
+</div>
 {% endblock %}

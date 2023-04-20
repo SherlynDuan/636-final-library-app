@@ -1,6 +1,11 @@
-{% extends "staffbase.html" %}
+{% extends "base.html" %}
 {% block content %}
 
-<h3 style="text-align:center; margin:30px auto;">Congratulations ! </h3>
-<h3 style="text-align:center; margin:30px auto;">You have successfully returned Book {{bookcopyid}} for Borrower {{borrowerid}} at {{todaydate}}</h3>
+<div  class="searchresult" style="height:200px;width:60%;margin-bottom:30px;">
+<p style="text-align:center; margin:30px auto;">Congratulations! You have successfully returned Book <span style="color:#736A4A; margin-left: 0.5rem ; margin-right: 0.5rem ;font-size: 22px;">{{bookcopyid}}</span> for Borrower <span style="color:#736A4A; margin-left: 0.5rem ; margin-right: 0.5rem ;font-size: 22px;">{{borrowerid}}</span> at <span style="font-size: 22px;color:#736A4A; margin-left: 0.5rem ; margin-right: 0.5rem ;">{{todaydate}}</span></p>
+</div>
+
+<div>
+    <button style="margin-top: 50px;"type = "button" class="backbutton" onclick="history.back()">Back</button>
+</div>
 {% endblock %}

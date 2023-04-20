@@ -1,11 +1,13 @@
-{% extends "staffbase.html" %}
+{% extends "base.html" %}
 {% block content %}
-<p style="text-align:center; font-size: 52px; margin:150px auto; "> Please input the name or/and Id of the borrower</p>
-<div class="container mt-3">
-  <form style="text-align:center;" action="/staff/borrowersearchresult" method="POST">
-    <input type="text" style="border-radius: 5px;" placeholder="Search by name" name="name">
-    <input type="text" style="border-radius: 5px;" placeholder="Search by borrowerid" name="borrowerid">
-    <button type="submit">Submit</button>
+
+<p class="searchresult" style="width:60%;margin-bottom:30px;" > Please input the <span style="color:#736A4A; margin-left: 0.5rem ; margin-right: 0.5rem ;"> Name </span> or/and <span style="color:#736A4A; margin-left: 0.5rem ; margin-right: 0.5rem ;"> ID </span>of the Borrower</p>
+
+<div  style="margin-top:10px ;" class="banner">
+  <form action="/staff/borrowersearchresult" method="POST">
+      <input style="width:120%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Search by name" name="name">
+      <input style="width:120%; margin-bottom:20px; "  class="searchinput" type="text" placeholder="Search by borrowerid" name="borrowerid">
+      <button style="text-align: center; left:50%;" class="searchbutton" type="submit">Go</button>
   </form>
-</div>
+</div >
 {% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div  class="banner">
+    <img class="searchimg" src="static/Search.png" alt="search logo">
+    <form action="/searchresult" method="POST">
+        <input class="searchinput" type="text" placeholder="Search by title or author" name="searchinput">
+        <button style="left:52%;" class="searchbutton" type="submit">Go</button>
+    </form>
+</div >
+<div class="recommends">
+    <p class="recommends-text-left">Recommends </p>
+    <p class="recommends-text-right">See All </p>
+</div>
+
+
+<div class="recommends-content">
+    <img class="bookimg" src="static/hp.png">
+    <div class="hp">
+        <p class="book">Harry Potter and the Order of the Phoenix</p>
+        <p class="author">J. K. Rowling </p>
+    </div>
+    <img class="bookimg" src="static/wind.png">
+    <div class="wind">
+        <p class="book">The Wind in the Willows</p>
+        <p class="author">Kenneth Grahame </p>
+    </div>
+    <img class="bookimg" src="static/python.png">
+    <div class="python">
+        <p class="book">Python Crash Course</p>
+        <p class="author">Eric Matthes</p>
+    </div>
+    
+</div>
+
+
+
+
+
+{% endblock %}

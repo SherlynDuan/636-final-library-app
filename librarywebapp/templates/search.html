@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<p style="text-align:center; font-size: 52px; margin:150px auto; "> Welcome to Waikirikiri Library</p>
-<div class="container mt-3">
-  <form style="text-align:center;" action="/searchresult" method="POST">
-    <input type="text" style="border-radius: 5px;" placeholder="Search by author" name="author">
-    <input type="text" style="border-radius: 5px;" placeholder="Search by title" name="title">
-    <button type="submit">Submit</button>
+<div  class="banner">
+  <img class="searchimg" src="static/Search.png" alt="search logo">
+  <form action="/searchresult" method="POST">
+      <input class="searchinput" type="text" placeholder="Search by Title or author" name="searchinput">
+      <button style="left:52%;" class="searchbutton" type="submit">Go</button>
   </form>
-</div>
+</div >
 {% endblock %}

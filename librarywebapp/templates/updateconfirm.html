@@ -1,9 +1,10 @@
-{% extends "staffbase.html" %}
+{% extends "base.html" %}
 {% block content %}
 
-<h3 style="text-align:center; margin:30px auto;">Congratulations ! </h3>
-<h3 style="text-align:center; margin:30px auto;">You have successfully updated details of borrower ID {{ID}}</h3>
 
+<div class="searchresult" style="height:200px; width:80%;margin-bottom:30px;" >
+    <p style="text-align:center; margin:30px auto;">Congratulations! You have successfully updated details of borrower ID <span style="color:#736A4A; margin-left: 0.5rem ; margin-right: 0.5rem ; font-size: 22px;">{{ID}}</span> </p>
+</div>
 <div class="container mt-3">
     <table class="table"> 
         
@@ -14,6 +15,9 @@
             <th>{{result[5]}}</th><th>{{result[6]}}</th><th>{{result[7]}}</th><th>{{result[8]}}</th></tr>  
         {% endfor %}  
     </table>
+</div>
+<div>
+    <button style="margin-top: 50px; bottom: 35%;"type = "button" class="searchbutton" onclick="history.back()">Back</button>
 </div>
     
 

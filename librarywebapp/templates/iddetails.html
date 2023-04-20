@@ -1,18 +1,23 @@
-{% extends "staffbase.html" %}
+{% extends "base.html" %}
 {% block content %}
-<p style="text-align:center; font-size: 32px; margin:50px auto; "> Please update the details of Borrower ID {{id}}</p>
-<div class="container mt-3">
-  <form style="text-align:center;margin:10px auto; width: 500px; " action="/staff/updateinfo" method="POST">
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="firstname" name="firstname" required>
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="familyname" name="familyname" required>
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="dateofbirth xxxx-xx-xx" name="dateofbirth" required>
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="housenumbername" name="housenumbername" required>
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="street" name="street" required>
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="town" name="town" required>
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="city" name="city" required>
-    <input type="text" style="margin:5px auto; width: 500px; " placeholder="postalcode" name="postalcode" required>
-    <input type="hidden"  name="id" value="{{id}}">
-    <button type="submit">Submit</button>
-  </form>
-</div>
+<p class="searchresult" style="width:60%;margin-bottom:30px;" >Please update the details of Borrower ID <span style="color:#736A4A; margin-left: 0.5rem ; margin-right: 0.5rem ;"> {{id}} </span></p>
+
+<div  style="height: 800px; text-align: center;align-items: flex-start;" >
+  <form action="/staff/updateinfo" method="POST">
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Firstname: {{results[2]}}" name="firstname" required>
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Familyname:{{results[1]}}" name="familyname" required>
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Dateofbirth:{{results[3]}} " name="dateofbirth" required>
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Housenumbername:{{results[4]}}" name="housenumbername" required>
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Street:{{results[5]}}" name="street" required>
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Town:{{results[6]}}" name="town" required>
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="City:{{results[7]}}" name="city" required>
+      <input style="width:50%; margin-bottom:20px; " class="searchinput" type="text" placeholder="Postalcode:{{results[8]}}" name="postalcode" required>
+      <input type="hidden"  name="id" value="{{id}}">
+      <div >
+        <button class="searchbutton" style=" bottom:20%;left:40%; background-color:#B9AE88; color:white;" type="submit">Submit</button>
+        <button class="searchbutton" style=" bottom:20%;left:48%; background-color:#B9AE88; color:white;"type = "button"  onclick="location.reload()">Reset</button>
+        <button class="searchbutton" style=" bottom:20%;left:56%; background-color:#B9AE88; color:white;"type="button" onclick="history.back()">Back</button>
+      </div> 
+   </form>
+</div >
 {% endblock %}
